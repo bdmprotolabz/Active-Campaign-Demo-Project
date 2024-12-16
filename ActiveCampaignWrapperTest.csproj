@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\ScriptFiles\Index.js" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="ActiveCampaignAPIWrapper">
+      <HintPath>..\..\ActiveCampaignAPIWrapper\bin\Debug\net8.0\ActiveCampaignAPIWrapper.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>

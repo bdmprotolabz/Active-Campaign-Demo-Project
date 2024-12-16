@@ -1,0 +1,888 @@
+﻿@{
+    ViewData["Title"] = "Manage Contacts";
+}
+@* <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Management</title>
+        <!-- Bootstrap CSS (Ensure you're using the latest version) -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+        <!-- SweetAlert2 CSS (Ensure you're using the latest version) -->
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.5.0/dist/sweetalert2.min.css" rel="stylesheet">
+    </head>
+<body>
+    <!-- Hidden Input for Tag ID -->
+    <input type="hidden" name="tagIdToAdd" id="tagIdToAdd">
+
+    <div class="container mt-4">
+        <h1 class="text-center mb-4">Active Campaign Contact Management</h1>
+
+        <!-- Tabs -->
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <a class="nav-link active" id="create-contact-tab" data-bs-toggle="tab" href="#create-contact" role="tab" aria-controls="create-contact" aria-selected="true">Create Contact</a>
+            </li>
+            <li class="nav-item" role="presentation">
+                <a class="nav-link" id="update-contact-tab" data-bs-toggle="tab" href="#update-contact" role="tab" aria-controls="update-contact" aria-selected="false">Update Contact</a>
+            </li>
+            <li class="nav-item" role="presentation">
+                <a class="nav-link" id="delete-contact-tab" data-bs-toggle="tab" href="#delete-contact" role="tab" aria-controls="delete-contact" aria-selected="false">Delete Contact</a>
+            </li>
+            <li class="nav-item" role="presentation">
+                <a class="nav-link" id="create-tag-tab" data-bs-toggle="tab" href="#create-tag" role="tab" aria-controls="create-tag" aria-selected="false">Create Tag</a>
+            </li>
+            <li class="nav-item" role="presentation">
+                <a class="nav-link" id="add-tag-tab" data-bs-toggle="tab" href="#add-tag" role="tab" aria-controls="add-tag" aria-selected="false">Add Tag</a>
+            </li>
+            <li class="nav-item" role="presentation">
+                <a class="nav-link" id="remove-tag-tab" data-bs-toggle="tab" href="#remove-tag" role="tab" aria-controls="remove-tag" aria-selected="false">Remove Tag</a>
+            </li>
+             <li class="nav-item" role="presentation">
+                <a class="nav-link" id="create-custom-field-tab" data-bs-toggle="tab" href="#create-custom-field" role="tab" aria-controls="create-custom-field" aria-selected="false">Create Custom Field</a>
+            </li>
+            <li class="nav-item" role="presentation">
+                <a class="nav-link" id="update-custom-field-tab" data-bs-toggle="tab" href="#update-custom-field" role="tab" aria-controls="update-custom-field" aria-selected="false">Update Custom Field</a>
+            </li> 
+            <li class="nav-item" role="presentation">
+                <a class="nav-link" id="contact-detail-tab" data-bs-toggle="tab" href="#contact-detail" role="tab" aria-controls="contact-detail" aria-selected="false">Contact Detail by ID</a>
+            </li>
+            <li class="nav-item" role="presentation">
+                <a class="nav-link" id="filter-contacts-tab" data-bs-toggle="tab" href="#filter-contacts" role="tab" aria-controls="filter-contacts" aria-selected="false">Select Contacts (Modified)</a>
+            </li>
+            <li class="nav-item" role="presentation">
+                <a class="nav-link" id="search-contacts-tab" data-bs-toggle="tab" href="#search-contacts" role="tab" aria-controls="search-contacts" aria-selected="false">Select Contacts (Search)</a>
+            </li>
+            <li class="nav-item" role="presentation">
+                <a class="nav-link" id="contact-activity-tab" data-bs-toggle="tab" href="#contact-activity" role="tab" aria-controls="contact-activity" aria-selected="false">Contact Activity by ID</a>
+            </li>
+            <li class="nav-item" role="presentation">
+                <a class="nav-link" id="all-activity-tab" data-bs-toggle="tab" href="#all-activity" role="tab" aria-controls="all-activity" aria-selected="false">All Contacts Activity</a>
+            </li> 
+        </ul>
+
+        <!-- Tab Content -->
+        <div class="tab-content" id="myTabContent">
+            <!-- Create Contact Form -->
+            <div class="tab-pane fade show active" id="create-contact" role="tabpanel" aria-labelledby="create-contact-tab">
+                <div class="card mt-4">
+                    <div class="card-header">Create a New Contact</div>
+                    <div class="card-body">
+                        <form method="post">
+                
+                            <div class="mb-3">
+                                <label for="email" class="form-label">Email</label>
+                                <input type="email" name="Email" id="email" class="form-control" placeholder="Enter email" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="firstName" class="form-label">First Name</label>
+                                <input type="text" name="FirstName" id="firstName" class="form-control" placeholder="Enter first name" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="lastName" class="form-label">Last Name</label>
+                                <input type="text" name="LastName" id="lastName" class="form-control" placeholder="Enter last name">
+                            </div>
+                            <div class="mb-3">
+                                <label for="phone" class="form-label">Phone</label>
+                                <input type="text" name="Phone" id="phone" class="form-control" placeholder="Enter phone number">
+                            </div>
+                            <button type="button" class="btn btn-primary" onclick="btnCreateContact()" id="createContactBtn">Create Contact</button>
+                           </form>
+                    </div>
+                </div>
+            </div>
+            <!-- Update Contact Form -->
+            <div class="tab-pane fade" id="update-contact" role="tabpanel" aria-labelledby="update-contact-tab">
+                <div class="card mt-4">
+                    <div class="card-header">Update an Existing Contact</div>
+                    <div class="card-body">
+                        <form method="post">
+                            <div class="mb-3">
+                                <label for="contactId" class="form-label">Contact ID</label>
+                                <input type="number" value="" name="contactId" id="contactId" class="form-control" placeholder="Enter contact ID" required readonly>
+                            </div>
+                            <div class="mb-3">
+                                <label for="updatedFirstName" class="form-label">First Name</label>
+                                <input type="text" name="FirstName" id="updatedFirstName" class="form-control" placeholder="Enter updated first name">
+                            </div>
+                            <div class="mb-3">
+                                <label for="updatedLastName" class="form-label">Last Name</label>
+                                <input type="text" name="LastName" id="updatedLastName" class="form-control" placeholder="Enter updated last name">
+                            </div>
+                            <div class="mb-3">
+                                <label for="updatedEmail" class="form-label">Email</label>
+                                <input type="email" name="Email" id="updatedEmail" class="form-control" placeholder="Enter updated email">
+                            </div>
+                            <div class="mb-3">
+                                <label for="updatedPhone" class="form-label">Phone</label>
+                                <input type="text" name="Phone" id="updatedPhone" class="form-control" placeholder="Enter updated phone number">
+                            </div>
+                            <button type="button" class="btn btn-warning" onclick="btnUpdateContact()">Update Contact</button>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+             <!-- Delete Contact Form -->
+            <div class="tab-pane fade" id="delete-contact" role="tabpanel" aria-labelledby="delete-contact-tab">
+                <div class="card mt-4">
+                    <div class="card-header">Delete a Contact</div>
+                    <div class="card-body">
+                        <form id="deleteContactForm" method="post" onsubmit="return false;">
+                            <div class="mb-3">
+                                <label for="contactIdDelete" class="form-label">Contact ID</label>
+                                <input type="number" id="contactIdDelete" class="form-control" placeholder="Enter contact ID to delete" required readonly>
+                            </div>
+                            <button type="button" class="btn btn-danger" onclick="btnDeleteContact()">Delete Contact</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <!-- Create Custom Field Form -->
+            <div class="tab-pane fade" id="create-custom-field" role="tabpanel" aria-labelledby="create-custom-field-tab">
+                <div class="card mt-4">
+                    <div class="card-header">Create a Custom Field</div>
+                    <div class="card-body">
+                        <form>
+                            <div class="mb-3">
+                                <label for="customFieldName" class="form-label">Custom Field Title</label>
+                                <input type="text" name="Title" id="customFieldName" class="form-control" placeholder="Enter custom field title" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="customFieldType" class="form-label">Custom Field Type</label>
+                                <select class="form-control" id="customFieldType" name="Type" required onchange="toggleOptionsInput()">
+                                    <option value="">Select Field Type</option>
+                                    <option value="text">Text</option>
+                                    <option value="textarea">Textarea</option>
+                                    <option value="dropdown">Dropdown</option>
+                                    <option value="multiselect">Multiselect</option>
+                                    <option value="radio">Radio</option>
+                                </select>
+                            </div>
+
+                            <!-- Options container for dropdown, multiselect, or radio field types -->
+                            <div class="mb-3" id="optionsContainer" style="display:none;">
+                                <label for="customFieldOptions" class="form-label">Options (Comma Separated)</label>
+                                <input type="text" id="customFieldOptions" class="form-control" placeholder="Enter options (comma separated)">
+                                <small class="form-text text-muted">For dropdown, multiselect, or radio fields, enter options as comma-separated values (e.g., Option 1, Option 2).</small>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="customFieldDescription" class="form-label">Custom Field Description</label>
+                                <textarea name="Description" id="customFieldDescription" class="form-control" placeholder="Enter custom field description"></textarea>
+                            </div>
+
+                            <button type="button" onclick="btnCreateCustomField();" class="btn btn-success">Create Custom Field</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <!-- Update Custom Field Form -->
+            <div class="tab-pane fade" id="update-custom-field" role="tabpanel" aria-labelledby="update-custom-field-tab">
+                <div class="card mt-4">
+                    <div class="card-header">Update Custom Field on Existing Contact</div>
+                    <div class="card-body">
+                        <form id="updateCustomFieldForm">
+                            <div class="mb-3">
+                                <label for="updateCustomFieldContactId" class="form-label">Contact ID</label>
+                                <input type="number" name="ContactId" id="updateCustomFieldContactId" class="form-control" placeholder="Enter contact ID" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="updateCustomFieldCustomFieldId" class="form-label">Custom Field ID</label>
+                                <input type="number" name="updateCustomFieldCustomFieldId" id="updateCustomFieldCustomFieldId" class="form-control" placeholder="Enter custom field ID" required readonly>
+                            </div>
+                            <div class="mb-3">
+                                <label for="updateCustomField" class="form-label">Custom Field Value</label>
+                                <input type="text" name="CustomFieldValue" id="updateCustomField" class="form-control" placeholder="Enter new custom field value" required>
+                            </div>
+                            <button type="button" onclick="btnUpdateCustomField();" class="btn btn-info">Update Custom Field</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <!-- Create Tag Form -->
+            <div class="tab-pane fade" id="create-tag" role="tabpanel" aria-labelledby="create-tag-tab">
+                <div class="card mt-4">
+                    <div class="card-header">Create a New Tag</div>
+                    <div class="card-body">
+                        <form method="post" >
+                            <div class="mb-3">
+                                <label for="tagName" class="form-label">Tag Name</label>
+                                <input type="text" name="Name" id="tagName" class="form-control" placeholder="Enter tag name" required>
+                            </div>
+                            <button type="button" onclick="btnCreateTag();" class="btn btn-primary">Create Tag</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <!-- Add Tag to Existing Contact Form -->
+            <div class="tab-pane fade" id="add-tag" role="tabpanel" aria-labelledby="add-tag-tab">
+                <div class="card mt-4">
+                    <div class="card-header">Add Tag to Existing Contact</div>
+                    <div class="card-body">
+                        <form method="post">
+
+               
+
+                            <div class="mb-3">
+                                <label for="tagContactId" class="form-label">Contact ID</label>
+                                <input type="number" name="tagContactId" id="tagContactId" class="form-control" placeholder="Enter contact ID" required readonly>
+                            </div>
+                            <div class="mb-3">
+                                <label for="tagNameToAdd" class="form-label">Tag Name</label>
+                                <input type="text" name="tagNameToAdd" id="tagNameToAdd" class="form-control" placeholder="Enter tag name" required readonly>
+                            </div>
+                            <button type="button" onclick="btnAddTagToContact();" class="btn btn-success">Add Tag</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <!-- Remove Tag from Existing Contact Form -->
+            <div class="tab-pane fade" id="remove-tag" role="tabpanel" aria-labelledby="remove-tag-tab">
+                <div class="card mt-4">
+                    <div class="card-header">Remove Tag from Existing Contact</div>
+                    <div class="card-body">
+                        <form method="post">
+                            <div class="mb-3">
+                                <label for="removeTagContactId" class="form-label">Contact ID</label>
+                                <input type="number" name="removeTagContactId" id="removeTagContactId" class="form-control" placeholder="Enter contact ID" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="tagNameToRemove" class="form-label">Tag Name</label>
+                                <input type="text" name="TagName" id="tagNameToRemove" class="form-control" placeholder="Enter tag name" required>
+                            </div>
+                            <button type="button" onclick="btnRemoveTagFromContact();" class="btn btn-danger">Remove Tag</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <!-- Contact Detail by ID Form -->
+            <div class="tab-pane fade" id="contact-detail" role="tabpanel" aria-labelledby="contact-detail-tab">
+                <div class="card mt-4">
+                    <div class="card-header">Get Contact Detail by ID</div>
+                    <div class="card-body">
+                        <form id="contactDetailForm">
+                            <div class="mb-3">
+                                <label for="contactDetailId" class="form-label">Contact ID</label>
+                                <input type="number" id="contactDetailId" class="form-control" placeholder="Enter contact ID" required readonly>
+                            </div>
+                            <button type="button" onclick="getContactById();" class="btn btn-info">Get Contact Detail</button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- DataTable to display contact details -->
+                <div class="card mt-4">
+                    <div class="card-header">Contact Information</div>
+                    <div class="card-body">
+                        <table id="contactTable" class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Contact ID</th>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Tags</th>
+                                    <th>Custom Fields</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Data will be inserted dynamically via JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <!-- Filter Contacts by Modified Date -->
+            <div class="tab-pane fade" id="filter-contacts" role="tabpanel" aria-labelledby="filter-contacts-tab">
+                <div class="card mt-4">
+                    <div class="card-header">Filter Contacts by Modified Date</div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label for="modifiedSince" class="form-label">Modified Since (Date)</label>
+                            <input type="date" id="modifiedSince" class="form-control" required>
+                        </div>
+                        <button type="button" id="filterContactsBtn" onclick="getContactsByModifiedDate();" class="btn btn-secondary">Filter Contacts</button>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <h5>Filtered Contacts</h5>
+                    <table class="table table-bordered" id="contactsTable">
+                        <thead>
+                            <tr>
+                                <th>Contact ID</th>
+                                        <th>Name</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                         
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+             <!-- Search Contacts by Name or Email -->
+            <div class="tab-pane fade" id="search-contacts" role="tabpanel" aria-labelledby="search-contacts-tab">
+                <div class="card mt-4">
+                    <div class="card-header">Search Contacts by Name or Email</div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label for="searchQuery" class="form-label">Search by Name or Email</label>
+                            <input type="text" name="Query" id="searchQuery" class="form-control" placeholder="Enter name or email to search" required>
+                        </div>
+                        <button type="button" class="btn btn-primary" onclick="searchContacts();">Search Contacts</button>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <h5>Searched Contacts</h5>
+                    <table class="table table-bordered" id="searchedcontactTable">
+                        <thead>
+                            <tr>
+                                <th>Contact ID</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Data will be dynamically inserted here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!-- Get Activity for a Contact Form -->
+            <div class="tab-pane fade" id="contact-activity" role="tabpanel" aria-labelledby="contact-activity-tab">
+                <div class="card mt-4">
+                    <div class="card-header">Get Activity for a Contact by ID</div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label for="activityContactId" class="form-label">Contact ID</label>
+                            <input type="number" id="activityContactId" class="form-control" placeholder="Enter contact ID" required>
+                        </div>
+                        <button type="button" class="btn btn-warning" onclick="getActivityForContact()">Get Activity</button>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <h5>Contact Activities</h5>
+                    <table class="table table-bordered" id="activityTable">
+                        <thead>
+                            <tr>
+                                <th>Activity ID</th>
+                                <th>Type</th>
+                                <th>Description</th>
+                                <th>Created Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td colspan="4" class="text-center">No activities for this contact.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!-- Get Activity for All Contacts in a Date Range -->
+            <div class="tab-pane fade" id="all-activity" role="tabpanel" aria-labelledby="all-activity-tab">
+                <div class="card mt-4">
+                    <div class="card-header">Get Activity for All Contacts</div>
+                    <div class="card-body">
+                        <form id="activityForm">
+                            <div class="mb-3">
+                                <label for="startDate" class="form-label">Start Date</label>
+                                <input type="date" id="startDate" class="form-control" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="endDate" class="form-label">End Date</label>
+                                <input type="date" id="endDate" class="form-control" required>
+                            </div>
+                            <button type="button" onclick="getActivitiesByDateRange();" class="btn btn-danger">Get All Activities</button>
+                        </form>
+
+                        <!-- Display result -->
+                        <div id="activitiesResult" class="mt-3">
+                            <!-- Activities will be displayed here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Add jQuery at the end of the body -->
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <!-- Bootstrap JS (No dependency on jQuery for Bootstrap 5, but required for Bootstrap functionality) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js"></script>
+    <!-- SweetAlert2 JS (No jQuery dependency) -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.5.0/dist/sweetalert2.min.js"></script>
+    <!-- Your custom JavaScript file -->
+    <script src="/ScriptFiles/Index.js"></script>
+
+
+</body>
+</html> *@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Management</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- SweetAlert2 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.5.0/dist/sweetalert2.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .card {
+            border-radius: 10px;
+            transition: transform 0.2s;
+        }
+        .card:hover {
+            transform: scale(1.02);
+        }
+        .nav-tabs .nav-link {
+            border: none;
+            border-radius: 0;
+            transition: background-color 0.3s;
+        }
+        .nav-tabs .nav-link.active {
+            background-color: #007bff;
+            color: white;
+        }
+        .nav-tabs .nav-link:hover {
+            background-color: #0056b3;
+            color: white;
+        }
+        .btn {
+            transition: background-color 0.3s, transform 0.2s;
+        }
+        .btn:hover {
+            transform: scale(1.05);
+        }
+        .table th, .table td {
+            vertical-align: middle;
+        }
+        @@media (max-width: 768px) {
+            .nav-tabs {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Hidden Input for Tag ID -->
+    <input type="hidden" name="tagIdToAdd" id="tagIdToAdd">
+
+    <div class="container mt-4">
+        <h1 class="text-center mb-4">Active Campaign Contact Management</h1>
+
+        <!-- Tabs -->
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <a class="nav-link active" id="create-contact-tab" data-bs-toggle="tab" href="#create-contact" role="tab" aria-controls="create-contact" aria-selected="true">Create Contact</a>
+            </li>
+            <li class="nav-item" role="presentation">
+                <a class="nav-link" id="update-contact-tab" data-bs-toggle="tab" href="#update-contact" role="tab" aria-controls="update-contact" aria-selected="false">Update Contact</a>
+            </li>
+            <li class="nav-item" role="presentation">
+                <a class="nav-link" id="delete-contact-tab" data-bs-toggle="tab" href="#delete-contact" role="tab" aria-controls="delete-contact" aria-selected="false">Delete Contact</a>
+            </li>
+            <li class="nav-item" role="presentation">
+                <a class="nav-link" id="create-tag-tab" data-bs-toggle="tab" href="#create-tag" role="tab" aria-controls="create-tag" aria-selected="false">Create Tag</a>
+            </li>
+            <li class="nav-item" role="presentation">
+                <a class="nav-link" id="add-tag-tab" data-bs-toggle="tab" href="#add-tag" role="tab" aria-controls="add-tag" aria-selected="false">Add Tag</a>
+            </li>
+            <li class="nav-item" role="presentation">
+                <a class="nav-link" id="remove-tag-tab" data-bs-toggle="tab" href="#remove-tag" role="tab" aria-controls="remove-tag" aria-selected="false">Remove Tag</a>
+            </li>
+            <li class="nav-item" role="presentation">
+                <a class="nav-link" id="create-custom-field-tab" data-bs-toggle="tab" href="#create-custom-field" role="tab" aria-controls="create-custom-field" aria-selected="false">Create Custom Field</a>
+            </li>
+            <li class="nav-item" role="presentation">
+                <a class="nav-link" id="update-custom-field-tab" data-bs-toggle="tab" href="#update-custom-field" role="tab" aria-controls="update-custom-field" aria-selected="false">Update Custom Field</a>
+            </li> 
+            <li class="nav-item" role="presentation">
+                <a class="nav-link" id="contact-detail-tab" data-bs-toggle="tab" href="#contact-detail" role="tab" aria-controls="contact-detail" aria-selected="false">Contact Detail by ID</a>
+            </li>
+            <li class="nav-item" role="presentation">
+                <a class="nav-link" id="filter-contacts-tab" data-bs-toggle="tab" href="#filter-contacts" role="tab" aria-controls="filter-contacts" aria-selected="false">Select Contacts (Modified)</a>
+            </li>
+            <li class="nav-item" role="presentation">
+                <a class="nav-link" id="search-contacts-tab" data-bs-toggle="tab" href="#search-contacts" role="tab" aria-controls="search-contacts" aria-selected="false">Select Contacts (Search)</a>
+            </li>
+            <li class="nav-item" role="presentation">
+                <a class="nav-link" id="contact-activity-tab" data-bs-toggle="tab" href="#contact-activity" role="tab" aria-controls="contact-activity" aria-selected="false">Contact Activity by ID</a>
+            </li>
+            <li class="nav-item" role="presentation">
+                <a class="nav-link" id="all-activity-tab" data-bs-toggle="tab" href="#all-activity" role="tab" aria-controls="all-activity" aria-selected="false">All Contacts Activity</a>
+            </li> 
+        </ul>
+
+        <!-- Tab Content -->
+        <div class="tab-content" id="myTabContent">
+
+            <!-- Create Contact Form -->
+            <div class="tab-pane fade show active" id="create-contact" role="tabpanel" aria-labelledby="create-contact-tab">
+                <div class="card mt-4">
+                    <div class="card-header">Create a New Contact</div>
+                    <div class="card-body">
+                        <form method="post">
+                            <div class="mb-3">
+                                <label for="email" class="form-label">Email</label>
+                                <input type="email" name="Email" id="email" class="form-control" placeholder="Enter email" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="firstName" class="form-label">First Name</label>
+                                <input type="text" name="FirstName" id="firstName" class="form-control" placeholder="Enter first name" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="lastName" class="form-label">Last Name</label>
+                                <input type="text" name="LastName" id="lastName" class="form-control" placeholder="Enter last name">
+                            </div>
+                            <div class="mb-3">
+                                <label for="phone" class="form-label">Phone</label>
+                                <input type="text" name="Phone" id="phone" class="form-control" placeholder="Enter phone number">
+                            </div>
+                            <button type="button" class="btn btn-primary" onclick="btnCreateContact()" id="createContactBtn">Create Contact</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Update Contact Form -->
+            <div class="tab-pane fade" id="update-contact" role="tabpanel" aria-labelledby="update-contact-tab">
+                <div class="card mt-4">
+                    <div class="card-header">Update an Existing Contact</div>
+                    <div class="card-body">
+                        <form method="post">
+                            <div class="mb-3">
+                                <label for="contactId" class="form-label">Contact ID</label>
+                                <input type="number" value="" name="contactId" id="contactId" class="form-control" placeholder="Enter contact ID" required readonly>
+                            </div>
+                            <div class="mb-3">
+                                <label for="updatedFirstName" class="form-label">First Name</label>
+                                <input type="text" name="FirstName" id="updatedFirstName" class="form-control" placeholder="Enter updated first name">
+                            </div>
+                            <div class="mb-3">
+                                <label for="updatedLastName" class="form-label">Last Name</label>
+                                <input type="text" name="LastName" id="updatedLastName" class="form-control" placeholder="Enter updated last name">
+                            </div>
+                            <div class="mb-3">
+                                <label for="updatedEmail" class="form-label">Email</label>
+                                <input type="email" name="Email" id="updatedEmail" class="form-control" placeholder="Enter updated email">
+                            </div>
+                            <div class="mb-3">
+                                <label for="updatedPhone " class="form-label">Phone</label>
+                                <input type="text" name="Phone" id="updatedPhone" class="form-control" placeholder="Enter updated phone number">
+                            </div>
+                            <button type="button" class="btn btn-warning" onclick="btnUpdateContact()">Update Contact</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Delete Contact Form -->
+            <div class="tab-pane fade" id="delete-contact" role="tabpanel" aria-labelledby="delete-contact-tab">
+                <div class="card mt-4">
+                    <div class="card-header">Delete a Contact</div>
+                    <div class="card-body">
+                        <form id="deleteContactForm" method="post" onsubmit="return false;">
+                            <div class="mb-3">
+                                <label for="contactIdDelete" class="form-label">Contact ID</label>
+                                <input type="number" id="contactIdDelete" class="form-control" placeholder="Enter contact ID to delete" required readonly>
+                            </div>
+                            <button type="button" class="btn btn-danger" onclick="btnDeleteContact()">Delete Contact</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Create Custom Field Form -->
+            <div class="tab-pane fade" id="create-custom-field" role="tabpanel" aria-labelledby="create-custom-field-tab">
+                <div class="card mt-4">
+                    <div class="card-header">Create a Custom Field</div>
+                    <div class="card-body">
+                        <form>
+                            <div class="mb-3">
+                                <label for="customFieldName" class="form-label">Custom Field Title</label>
+                                <input type="text" name="Title" id="customFieldName" class="form-control" placeholder="Enter custom field title" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="customFieldType" class="form-label">Custom Field Type</label>
+                                <select class="form-control" id="customFieldType" name="Type" required onchange="toggleOptionsInput()">
+                                    <option value="">Select Field Type</option>
+                                    <option value="text">Text</option>
+                                    <option value="textarea">Textarea</option>
+                                    <option value="dropdown">Dropdown</option>
+                                    <option value="multiselect">Multiselect</option>
+                                    <option value="radio">Radio</option>
+                                </select>
+                            </div>
+                            <div class="mb-3" id="optionsContainer" style="display:none;">
+                                <label for="customFieldOptions" class="form-label">Options (Comma Separated)</label>
+                                <input type="text" id="customFieldOptions" class="form-control" placeholder="Enter options (comma separated)">
+                                <small class="form-text text-muted">For dropdown, multiselect, or radio fields, enter options as comma-separated values (e.g., Option 1, Option 2).</small>
+                            </div>
+                            <div class="mb-3">
+                                <label for="customFieldDescription" class="form-label">Custom Field Description</label>
+                                <textarea name="Description" id="customFieldDescription" class="form-control" placeholder="Enter custom field description"></textarea>
+                            </div>
+                            <button type="button" onclick="btnCreateCustomField();" class="btn btn-success">Create Custom Field</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Update Custom Field Form -->
+             <div class="tab-pane fade" id="update-custom-field" role="tabpanel" aria-labelledby="update-custom-field-tab">
+                <div class="card mt-4">
+                    <div class="card-header">Update Custom Field on Existing Contact</div>
+                    <div class="card-body">
+                        <form id="updateCustomFieldForm">
+                            <div class="mb-3">
+                                <label for="updateCustomFieldContactId" class="form-label">Contact ID</label>
+                                <input type="number" name="ContactId" id="updateCustomFieldContactId" class="form-control" placeholder="Enter contact ID" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="updateCustomFieldCustomFieldId" class="form-label">Custom Field ID</label>
+                                <input type="number" name="updateCustomFieldCustomFieldId" id="updateCustomFieldCustomFieldId" class="form-control" placeholder="Enter custom field ID" required readonly>
+                            </div>
+                            <div class="mb-3">
+                                <label for="updateCustomField" class="form-label">Custom Field Value</label>
+                                <input type=" text" name="CustomFieldValue" id="updateCustomField" class="form-control" placeholder="Enter new custom field value" required>
+                            </div>
+                            <button type="button" onclick="btnUpdateCustomField();" class="btn btn-info">Update Custom Field</button>
+                        </form>
+                    </div>
+                </div>
+            </div> 
+   
+            <!-- Create Tag Form -->
+             <div class="tab-pane fade" id="create-tag" role="tabpanel" aria-labelledby="create-tag-tab">
+                <div class="card mt-4">
+                    <div class="card-header">Create New Tag</div>
+                    <div class="card-body">
+                        <form method="post">
+                            <div class="mb-3">
+                                <label for="tagName" class="form-label">Tag Name</label>
+                                <input type="text" name="tagName" id="tagName" class="form-control" placeholder="Enter tag name" required>
+                            </div>
+                            <button type="button" onclick="btnCreateTag();" class="btn btn-primary">Create Tag</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Add Tag to Existing Contact Form -->
+             <div class="tab-pane fade" id="add-tag" role="tabpanel" aria-labelledby="add-tag-tab">
+                <div class="card mt-4">
+                    <div class="card-header">Add Tag(s) to Existing Contact</div>
+                    <div class="card-body">
+                        <form method="post">
+                            <div class="mb-3">
+                                <label for="tagContactId" class="form-label">Contact ID</label>
+                                <input type="number" name="tagContactId" id="tagContactId" class="form-control" placeholder="Enter contact ID" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="tagSelect" class="form-label">Select Tag(s)</label>
+                                <select multiple class="form-control" id="tagSelect" name="tagIds[]" required>
+                                    <!-- Tags will be populated here -->
+                                </select>
+                            </div>
+                            <button type="button" onclick="btnAddTagToContact();" class="btn btn-success">Add Tag(s)</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Remove Tag from Existing Contact Form -->
+             <div class="tab-pane fade" id="remove-tag" role="tabpanel" aria-labelledby="remove-tag-tab">
+                <div class="card mt-4">
+                    <div class="card-header">Remove Tag from Existing Contact</div>
+                    <div class="card-body">
+                        <form>
+                            <div class="mb-3">
+                                <label for="removeTagContactId" class="form-label">Contact ID</label>
+                                <input type="number" name="removeTagContactId" id="removeTagContactId" class="form-control" placeholder="Enter contact ID" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="tagNameToRemove" class="form-label">Tags to Remove</label>
+                                <select id="tagNameToRemove" class="form-control" multiple required>
+                                    <!-- Tags will be dynamically inserted here -->
+                                </select>
+                            </div>
+                            <button type="button" onclick="btnRemoveTagFromContact();" class="btn btn-danger">Remove Tag(s)</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contact Detail by ID Form -->
+            <div class="tab-pane fade" id="contact-detail" role="tabpanel" aria-labelledby="contact-detail-tab">
+                <div class="card mt-4">
+                    <div class="card-header">Get Contact Detail by ID</div>
+                    <div class="card-body">
+                        <form id="contactDetailForm">
+                            <div class="mb-3">
+                                <label for="contactDetailId" class="form-label">Contact ID</label>
+                                <input type="number" id="contactDetailId" class="form-control" placeholder="Enter contact ID" required readonly>
+                            </div>
+                            <button type="button" onclick="getContactById();" class="btn btn-info">Get Contact Detail</button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- DataTable to display contact details -->
+                <div class="card mt-4">
+                    <div class="card-header">Contact Information</div>
+                    <div class="card-body">
+                        <table id="contactTable" class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Contact ID</th>
+                                    <th>Name</th>
+                                    <th>Email </th>
+                                    <th>Tags</th>
+                                    <th>Custom Fields</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Data will be inserted dynamically via JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filter Contacts by Modified Date -->
+            <div class="tab-pane fade" id="filter-contacts" role="tabpanel" aria-labelledby="filter-contacts-tab">
+                <div class="card mt-4">
+                    <div class="card-header">Filter Contacts by Modified Date</div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label for="modifiedSince" class="form-label">Modified Since (Date)</label>
+                            <input type="date" id="modifiedSince" class="form-control" required>
+                        </div>
+                        <button type="button" id="filterContactsBtn" onclick="getContactsByModifiedDate();" class="btn btn-secondary">Filter Contacts</button>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <h5>Filtered Contacts</h5>
+                    <table class="table table-bordered" id="contactsTable">
+                        <thead>
+                            <tr>
+                                <th>Contact ID</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Search Contacts by Name or Email -->
+            <div class="tab-pane fade" id="search-contacts" role="tabpanel" aria-labelledby="search-contacts-tab">
+                <div class="card mt-4">
+                    <div class="card-header">Search Contacts by Name or Email</div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label for="searchQuery" class="form-label">Search by Name or Email</label>
+                            <input type="text" name="Query" id="searchQuery" class="form-control" placeholder="Enter name or email to search" required>
+                        </div>
+                        <button type="button" class="btn btn-primary" onclick="searchContacts();">Search Contacts</button>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <h5>Searched Contacts</h5>
+                    <table class="table table-bordered" id="searchedcontactTable">
+                        <thead>
+                            <tr>
+                                <th>Contact ID</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Data will be dynamically inserted here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Get Activity for a Contact Form -->
+            <div class="tab-pane fade" id="contact-activity" role="tabpanel" aria-labelledby="contact-activity-tab">
+                <div class="card mt-4">
+                    <div class="card-header">Get Activity for a Contact by ID</div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label for="activityContactId" class="form-label">Contact ID</label>
+                            <input type="number" id="activityContactId" class="form-control" placeholder="Enter contact ID" required>
+                        </div>
+                        <button type="button" class="btn btn-warning" onclick="getActivityForContact()">Get Activity</button>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <h5>Contact Activities</h5>
+                    <table class="table table-bordered" id="activityTable">
+                        <thead>
+                            <tr>
+                                <th>Activity ID</th>
+                                <th>Type</th>
+                                <th>Description</th>
+                                <th>Created Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td colspan="4" class="text-center">No activities for this contact.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Get Activity for All Contacts in a Date Range -->
+            <div class="tab-pane fade" id="all-activity" role="tabpanel" aria-labelledby="all-activity-tab">
+                <div class="card mt-4">
+                    <div class="card-header">Get Activity for All Contacts</div>
+                    <div class="card-body">
+                        <form id="activityForm">
+                            <div class="mb-3">
+                                <label for="startDate" class="form-label ">Start Date</label>
+                                <input type="date" id="startDate" class="form-control" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="endDate" class="form-label">End Date</label>
+                                <input type="date" id="endDate" class="form-control" required>
+                            </div>
+                            <button type="button" onclick="getActivitiesByDateRange();" class="btn btn-danger">Get All Activities</button>
+                        </form>
+
+                        <!-- Display result -->
+                        <div id="activitiesResult" class="mt-3">
+                            <!-- Activities will be displayed here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Add jQuery at the end of the body -->
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js"></script>
+    <!-- SweetAlert2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.5.0/dist/sweetalert2.min.js"></script>
+    <!-- Your custom JavaScript file -->
+    <script src="/ScriptFiles/Index.js"></script>
+</body>
+</html>
